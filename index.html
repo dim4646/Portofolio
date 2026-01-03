@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.E.N.T. | Tech Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon-cyan: #00ffff;
+            --neon-pink: #ff00ff;
+            --neon-green: #00ff00;
+            --dark-bg: #0a0a0f;
+            --darker-bg: #050508;
+            --grid-color: rgba(0, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: var(--dark-bg);
+            color: var(--neon-cyan);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Video Background */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .video-background video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.3;
+            filter: hue-rotate(180deg) saturate(2);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(10, 10, 15, 0.7) 0%,
+                rgba(10, 10, 15, 0.85) 50%,
+                rgba(10, 10, 15, 0.95) 100%
+            );
+            z-index: 1;
+        }
+
+        /* Animated Background Grid */
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        /* Particle Canvas */
+        #particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 3;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header with Glitch Effect */
+        header {
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+            z-index: 3;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glitch {
+            font-size: 5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            position: relative;
+            text-shadow: 
+                0 0 10px var(--neon-cyan),
+                0 0 20px var(--neon-cyan),
+                0 0 30px var(--neon-cyan),
+                0 0 40px var(--neon-cyan);
+            animation: glitch 3s infinite;
+        }
+
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: var(--neon-pink);
+            margin-top: 20px;
+            text-shadow: 
+                0 0 10px var(--neon-pink),
+                0 0 20px var(--neon-pink);
+        }
+
+        .typing-text {
+            font-size: 1.2rem;
+            color: var(--neon-green);
+            margin-top: 10px;
+            border-right: 2px solid var(--neon-green);
+            white-space: nowrap;
+            overflow: hidden;
+            display: inline-block;
+            animation: typing 3s steps(40) infinite, blink 0.5s step-end infinite;
+            text-shadow: 0 0 10px var(--neon-green);
+        }
+
+        @keyframes typing {
+            0%, 100% { width: 0; }
+            50% { width: 100%; }
+        }
+
+        @keyframes blink {
+            50% { border-color: transparent; }
+        }
+
+        /* Terminal Section */
+        .terminal {
+            background: rgba(10, 10, 15, 0.95);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 40px 0;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.3),
+                inset 0 0 20px rgba(0, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .terminal::before {
+            content: '●●●';
+            position: absolute;
+            top: 10px;
+            left: 15px;
+            color: var(--neon-pink);
+            font-size: 1.5rem;
+            letter-spacing: 5px;
+        }
+
+        .terminal-header {
+            color: var(--neon-cyan);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            padding-top: 20px;
+            opacity: 0.7;
+        }
+
+        .terminal-content {
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .command {
+            color: var(--neon-green);
+        }
+
+        .output {
+            color: var(--neon-cyan);
+            padding-left: 20px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+            border: 2px solid var(--neon-cyan);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
+            border-color: var(--neon-pink);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--neon-pink);
+            text-shadow: 0 0 20px var(--neon-pink);
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--neon-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .tech-badge {
+            background: rgba(0, 255, 255, 0.1);
+            border: 1px solid var(--neon-cyan);
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tech-badge:hover {
+            background: rgba(0, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        /* Project Cards */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .project-card {
+            background: rgba(10, 10, 15, 0.95);
+            border: 2px solid var(--neon-pink);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .project-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 0, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .project-card:hover::after {
+            left: 100%;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.6);
+        }
+
+        .project-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .project-title {
+            font-size: 1.5rem;
+            color: var(--neon-pink);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .project-desc {
+            color: var(--neon-cyan);
+            line-height: 1.8;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            text-align: center;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.05), rgba(255, 0, 255, 0.05));
+            border-radius: 20px;
+            margin: 60px 0;
+            border: 2px solid var(--neon-green);
+            backdrop-filter: blur(10px);
+        }
+
+        .contact-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin: 10px;
+        }
+
+        .contact-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--neon-cyan);
+            transition: left 0.3s;
+            z-index: -1;
+        }
+
+        .contact-btn:hover::before {
+            left: 0;
+        }
+
+        .contact-btn:hover {
+            color: var(--dark-bg);
+            box-shadow: 0 0 30px var(--neon-cyan);
+        }
+
+        /* Circuit Lines Animation */
+        .circuit-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
+            animation: circuit 4s linear infinite;
+        }
+
+        @keyframes circuit {
+            0% { transform: translateX(-100%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100vw); opacity: 0; }
+        }
+
+        /* Section Headers */
+        .section-header {
+            font-size: 2.5rem;
+            text-align: center;
+            margin: 60px 0 40px;
+            color: var(--neon-pink);
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            text-shadow: 0 0 20px var(--neon-pink);
+            position: relative;
+        }
+
+        .section-header::after {
+            content: '';
+            display: block;
+            width: 100px;
+            height: 3px;
+            background: var(--neon-cyan);
+            margin: 20px auto;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .glitch {
+                font-size: 3rem;
+            }
+            .section-header {
+                font-size: 2rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline id="bgVideo">
+            <source src="https://pixabay.com/videos/download/video-12716_medium.mp4" type="video/mp4">
+            <!-- Backup video sources -->
+            <source src="https://cdn.pixabay.com/video/2020/08/24/48288-453806148_large.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <div class="bg-grid"></div>
+    <canvas id="particles"></canvas>
+    
+    <div class="circuit-line" style="top: 20%; animation-delay: 0s;"></div>
+    <div class="circuit-line" style="top: 50%; animation-delay: 2s;"></div>
+    <div class="circuit-line" style="top: 80%; animation-delay: 4s;"></div>
+
+    <div class="container">
+        <header>
+            <h1 class="glitch">S.E.N.T.</h1>
+            <p class="subtitle">SENIOR ELECTRONIC & NETWORK TECHNICIAN</p>
+            <p class="typing-text">SYSTEM.INITIALIZE > LOADING_PORTFOLIO...</p>
+        </header>
+
+        <div class="terminal">
+            <div class="terminal-header">root@sent:~$ cat profile.txt</div>
+            <div class="terminal-content">
+                <p class="command">> EXECUTING PROFILE_QUERY...</p>
+                <p class="output">
+                    [OK] Senior Electronic and Network Technician<br>
+                    [OK] 30+ Years Global Experience in Advanced Systems<br>
+                    [OK] 10+ Years Australian Market Specialist<br>
+                    [OK] High-Rise Security Integration Expert<br>
+                    [OK] Access Control | CCTV | Network Infrastructure<br>
+                    [OK] Fire System Integration | Automation | Cloud Solutions
+                </p>
+                <p class="command">> SPECIALIZATION: High-rise residential, commercial & hotel environments</p>
+                <p class="command">> STATUS: OPERATIONAL | READY FOR DEPLOYMENT</p>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">30+</div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">10+</div>
+                <div class="stat-label">Years in AU</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">20-30+</div>
+                <div class="stat-label">Level Buildings</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">System Reliability</div>
+            </div>
+        </div>
+
+        <h2 class="section-header">TECH STACK</h2>
+        <div class="tech-stack">
+            <div class="tech-badge">iPassan (DFI)</div>
+            <div class="tech-badge">Protege</div>
+            <div class="tech-badge">DNAKE</div>
+            <div class="tech-badge">Dahua CCTV</div>
+            <div class="tech-badge">MikroTik</div>
+            <div class="tech-badge">TP-Link</div>
+            <div class="tech-badge">VLAN Config</div>
+            <div class="tech-badge">Docker</div>
+            <div class="tech-badge">Linux</div>
+            <div class="tech-badge">Fire Integration</div>
+            <div class="tech-badge">Lift Control</div>
+            <div class="tech-badge">Cloud Systems</div>
+        </div>
+
+        <h2 class="section-header">CORE SYSTEMS</h2>
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-icon">🏢</div>
+                <h3 class="project-title">High-Rise Integration</h3>
+                <p class="project-desc">
+                    Complete security integration for 20-30+ level buildings. Coordination with fire contractors and lift technicians. Full lifecycle delivery from design to commissioning.
+                </p>
+            </div>
+            <div class="project-card">
+                <div class="project-icon">🔐</div>
+                <h3 class="project-title">Access Control Systems</h3>
+                <p class="project-desc">
+                    Advanced access control deployment using iPassan, Protege, and DNAKE systems. Integration with intercom, CCTV, and fire systems for comprehensive security.
+                </p>
+            </div>
+            <div class="project-card">
+                <div class="project-icon">📹</div>
+                <h3 class="project-title">CCTV & Surveillance</h3>
+                <p class="project-desc">
+                    Enterprise-grade Dahua CCTV installations with intelligent analytics. Network-optimized streaming and storage solutions for 24/7 monitoring.
+                </p>
+            </div>
+            <div class="project-card">
+                <div class="project-icon">🌐</div>
+                <h3 class="project-title">Network Infrastructure</h3>
+                <p class="project-desc">
+                    Complex network environments using MikroTik and TP-Link. VLAN segmentation, secure routing, and optimized bandwidth management for security systems.
+                </p>
+            </div>
+            <div class="project-card">
+                <div class="project-icon">⚡</div>
+                <h3 class="project-title">Live System Recovery</h3>
+                <p class="project-desc">
+                    Critical system stabilization and troubleshooting on live environments. Zero-downtime problem resolution with methodical diagnostic approaches.
+                </p>
+            </div>
+            <div class="project-card">
+                <div class="project-icon">🔥</div>
+                <h3 class="project-title">Fire System Integration</h3>
+                <p class="project-desc">
+                    Seamless integration of fire alarm systems with access control and lift operations. Compliance-focused safety protocols and emergency response automation.
+                </p>
+            </div>
+        </div>
+
+        <div class="terminal">
+            <div class="terminal-header">root@sent:~$ ./approach.sh --methodical</div>
+            <div class="terminal-content">
+                <p class="command">> EXECUTING PROFESSIONAL_APPROACH...</p>
+                <p class="output">
+                    [✓] Methodical System Analysis<br>
+                    [✓] Clear Technical Documentation<br>
+                    [✓] Security-First Architecture<br>
+                    [✓] Long-term System Reliability<br>
+                    [✓] Full Lifecycle Support<br>
+                    [✓] Zero-Downtime Troubleshooting
+                </p>
+                <p class="command">> GOAL: Deliver secure, reliable, and maintainable solutions</p>
+            </div>
+        </div>
+
+        <div class="contact-section">
+            <h2 class="section-header">INITIATE CONTACT</h2>
+            <p style="font-size: 1.2rem; margin: 30px 0; color: var(--neon-green);">
+                Ready to discuss your next project?<br>
+                Let's build something reliable together.
+            </p>
+            <a href="mailto:contact@example.com" class="contact-btn">Send Message</a>
+            <a href="#" class="contact-btn">Download Resume</a>
+        </div>
+
+        <div style="text-align: center; padding: 40px 0; opacity: 0.5; font-size: 0.9rem;">
+            <p>© 2025 S.E.N.T. | SENIOR ELECTRONIC & NETWORK TECHNICIAN</p>
+            <p style="margin-top: 10px;">SYSTEM STATUS: <span style="color: var(--neon-green);">OPERATIONAL</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Video fallback handling
+        const video = document.getElementById('bgVideo');
+        video.addEventListener('error', function() {
+            console.log('Video failed to load, particles will be more visible');
+            document.querySelector('.video-background').style.opacity = '0';
+        });
+
+        // Particle System
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.fillStyle = 'rgba(0, 255, 255, 0.6)';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function connectParticles() {
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 120) {
+                        ctx.strokeStyle = `rgba(0, 255, 255, ${0.2 - dist / 600})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            connectParticles();
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
